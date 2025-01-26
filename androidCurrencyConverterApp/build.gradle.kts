@@ -34,7 +34,15 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
+    flavorDimensions.add("mode")
+    productFlavors {
+        create("free") {
+            dimension = "mode"
+        }
+        create("premium") {
+            dimension = "mode"
+        }
+    }
 }
 
 dependencies {
