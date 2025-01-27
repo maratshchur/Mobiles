@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
@@ -19,6 +20,7 @@ import com.example.currencyconverter.R
 class DataFragment : Fragment() {
 
     private lateinit var viewModel: ConverterViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,9 +42,63 @@ class DataFragment : Fragment() {
         spinnerFrom.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
         spinnerTo.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
 
+        spinnerFrom.setSelection(categories.indexOf(viewModel.fromUnit))
+        spinnerTo.setSelection(categories.indexOf(viewModel.toUnit))
+
+        spinnerFrom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                viewModel.apply {
+                    fromUnit = categories[position]
+                    _fromUnit.value = fromUnit
+                    convert()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        spinnerTo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                viewModel.apply {
+                    toUnit = categories[position]
+                    _toUnit.value = toUnit
+                    convert()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+        viewModel.fromUnitLiveData.observe(viewLifecycleOwner) { fromUnit ->
+            val position = categories.indexOf(fromUnit)
+            if (position >= 0) {
+                spinnerFrom.setSelection(position)
+            } else {
+                Toast.makeText(requireContext(), "Invalid From Unit", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.toUnitLiveData.observe(viewLifecycleOwner) { toUnit ->
+            val position = categories.indexOf(toUnit)
+            if (position >= 0) {
+                spinnerTo.setSelection(position)
+            } else {
+                Toast.makeText(requireContext(), "Invalid To Unit", Toast.LENGTH_SHORT).show()
+            }
+        }
         // Observe data changes
         viewModel.input.observe(viewLifecycleOwner) { tvInput.text = it }
         viewModel.output.observe(viewLifecycleOwner) { tvOutput.text = it }
+
+        // Observe unit changes
+        viewModel.fromUnitLiveData.observe(viewLifecycleOwner) { fromUnit ->
+            val position = categories.indexOf(fromUnit)
+            if (position >= 0) spinnerFrom.setSelection(position)
+        }
+
+        viewModel.toUnitLiveData.observe(viewLifecycleOwner) { toUnit ->
+            val position = categories.indexOf(toUnit)
+            if (position >= 0) spinnerTo.setSelection(position)
+        }
 
         // Handle swap button
         tvSwap.setOnClickListener { viewModel.swapUnits() }
@@ -60,4 +116,5 @@ class DataFragment : Fragment() {
         clipboard.setPrimaryClip(clip)
         Toast.makeText(requireContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show()
     }
+
 }
