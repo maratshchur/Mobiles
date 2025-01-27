@@ -1,2 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="select_category">Выберите категорию</string>
+    <string name="select_unit">Выберите величину</string>
+
+    <!-- Категории -->
+    <string-array name="categories">
+        <item>Дистанция</item>
+        <item>Масса</item>
+        <item>Валюта</item>
+    </string-array>
+
+    <!-- Величины для дистанции -->
+    <string-array name="distance_units">
+        <item>Километры</item>
+        <item>Мили</item>
+        <item>Метры</item>
+    </string-array>
+
+    <!-- Величины для массы -->
+    <string-array name="mass_units">
+        <item>Килограммы</item>
+        <item>Фунты</item>
+        <item>Граммы</item>
+    </string-array>
+
+    <!-- Величины для валюты -->
+    <string-array name="currency_units">
+        <item>Доллары</item>
+        <item>Евро</item>
+        <item>Рубли</item>
+    </string-array>
+</resources>
