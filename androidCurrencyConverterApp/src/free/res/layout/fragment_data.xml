@@ -1,0 +1,120 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:id="@+id/tv_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Длина"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/tv_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Вес"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/tv_currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Валюта"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <Spinner
+            android:id="@+id/spinner_from"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tv_swap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⇄"
+            android:textSize="24sp"
+            android:padding="8dp"
+            android:gravity="center"
+            android:visibility="gone"
+            />
+
+        <Spinner
+            android:id="@+id/spinner_to"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <!-- Input/Output Fields -->
+    <TextView
+        android:id="@+id/tv_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="0"
+        android:textSize="24sp"
+        android:gravity="center_horizontal"
+        android:background="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/tv_output"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="0"
+        android:textSize="24sp"
+        android:gravity="center_horizontal"
+        android:background="@android:color/darker_gray" />
+
+    <!-- Copy Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btn_copy_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Copy Input" />
+
+        <Button
+            android:id="@+id/btn_copy_output"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Copy Output" />
+    </LinearLayout>
+
+</LinearLayout>

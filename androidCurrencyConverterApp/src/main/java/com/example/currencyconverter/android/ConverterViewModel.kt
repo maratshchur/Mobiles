@@ -14,6 +14,16 @@ class ConverterViewModel : ViewModel() {
 
     var fromUnit = "Kilometers"
     var toUnit = "Miles"
+    var selectedCategory = "Length"
+
+    private val categories = mapOf(
+        "Length" to listOf("Kilometers", "Miles", "Meters"),
+        "Weight" to listOf("Kilograms", "Pounds", "Ounces"),
+        "Currency" to listOf("USD", "EUR", "GBP")
+    )
+    fun getCategoriesByType(): Map<String, List<String>> {
+        return categories
+    }
 
     val _fromUnit = MutableLiveData(fromUnit)
     val fromUnitLiveData: LiveData<String> = _fromUnit

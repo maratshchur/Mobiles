@@ -21,7 +21,6 @@ class DataFragment : Fragment() {
 
     private lateinit var viewModel: ConverterViewModel
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,6 +28,9 @@ class DataFragment : Fragment() {
         val view = inflater.inflate(com.example.currencyconverter.android.R.layout.fragment_data, container, false)
         viewModel = ViewModelProvider(requireActivity()).get(ConverterViewModel::class.java)
 
+        val tvLength = view.findViewById<TextView>(com.example.currencyconverter.android.R.id.tv_length)
+        val tvWeight = view.findViewById<TextView>(com.example.currencyconverter.android.R.id.tv_weight)
+        val tvCurrency = view.findViewById<TextView>(com.example.currencyconverter.android.R.id.tv_currency)
         val spinnerFrom = view.findViewById<Spinner>(com.example.currencyconverter.android.R.id.spinner_from)
         val spinnerTo = view.findViewById<Spinner>(com.example.currencyconverter.android.R.id.spinner_to)
         val tvInput = view.findViewById<TextView>(com.example.currencyconverter.android.R.id.tv_input)
@@ -37,21 +39,56 @@ class DataFragment : Fragment() {
         val btnCopyOutput = view.findViewById<Button>(com.example.currencyconverter.android.R.id.btn_copy_output)
         val tvSwap = view.findViewById<TextView>(com.example.currencyconverter.android.R.id.tv_swap)
 
-        // Populate spinners with categories and units
-        val categories = viewModel.getCategories()
-        spinnerFrom.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
-        spinnerTo.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
+        // Categories and units
+        val categories = viewModel.getCategoriesByType()
 
-        spinnerFrom.setSelection(categories.indexOf(viewModel.fromUnit))
-        spinnerTo.setSelection(categories.indexOf(viewModel.toUnit))
+        // Update spinners based on selected category
+        fun updateUnitSpinners(category: String) {
+            val units = categories[category] ?: emptyList()
+            spinnerFrom.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, units)
+            spinnerTo.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, units)
+
+            spinnerFrom.setSelection(units.indexOf(viewModel.fromUnit))
+            spinnerTo.setSelection(units.indexOf(viewModel.toUnit))
+        }
+
+        // Update text styles for the selected category
+        fun highlightSelectedCategory(selectedView: TextView) {
+            listOf(tvLength, tvWeight, tvCurrency).forEach { textView ->
+                textView.setBackgroundResource(android.R.color.transparent)
+                textView.setTextColor(resources.getColor(android.R.color.black))
+            }
+            selectedView.setTextColor(resources.getColor(android.R.color.holo_green_dark))
+        }
+
+        // Handle category selection
+        tvLength.setOnClickListener {
+            viewModel.selectedCategory = "Length"
+            highlightSelectedCategory(tvLength)
+            updateUnitSpinners("Length")
+        }
+
+        tvWeight.setOnClickListener {
+            viewModel.selectedCategory = "Weight"
+            highlightSelectedCategory(tvWeight)
+            updateUnitSpinners("Weight")
+        }
+
+        tvCurrency.setOnClickListener {
+            viewModel.selectedCategory = "Currency"
+            highlightSelectedCategory(tvCurrency)
+            updateUnitSpinners("Currency")
+        }
+
+        // Set initial category
+        highlightSelectedCategory(tvLength)
+        updateUnitSpinners("Length")
 
         spinnerFrom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                viewModel.apply {
-                    fromUnit = categories[position]
-                    _fromUnit.value = fromUnit
-                    convert()
-                }
+                val units = categories[viewModel.selectedCategory] ?: emptyList()
+                viewModel.fromUnit = units[position]
+                viewModel.convert()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -59,45 +96,12 @@ class DataFragment : Fragment() {
 
         spinnerTo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                viewModel.apply {
-                    toUnit = categories[position]
-                    _toUnit.value = toUnit
-                    convert()
-                }
+                val units = categories[viewModel.selectedCategory] ?: emptyList()
+                viewModel.toUnit = units[position]
+                viewModel.convert()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-        viewModel.fromUnitLiveData.observe(viewLifecycleOwner) { fromUnit ->
-            val position = categories.indexOf(fromUnit)
-            if (position >= 0) {
-                spinnerFrom.setSelection(position)
-            } else {
-                Toast.makeText(requireContext(), "Invalid From Unit", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        viewModel.toUnitLiveData.observe(viewLifecycleOwner) { toUnit ->
-            val position = categories.indexOf(toUnit)
-            if (position >= 0) {
-                spinnerTo.setSelection(position)
-            } else {
-                Toast.makeText(requireContext(), "Invalid To Unit", Toast.LENGTH_SHORT).show()
-            }
-        }
-        // Observe data changes
-        viewModel.input.observe(viewLifecycleOwner) { tvInput.text = it }
-        viewModel.output.observe(viewLifecycleOwner) { tvOutput.text = it }
-
-        // Observe unit changes
-        viewModel.fromUnitLiveData.observe(viewLifecycleOwner) { fromUnit ->
-            val position = categories.indexOf(fromUnit)
-            if (position >= 0) spinnerFrom.setSelection(position)
-        }
-
-        viewModel.toUnitLiveData.observe(viewLifecycleOwner) { toUnit ->
-            val position = categories.indexOf(toUnit)
-            if (position >= 0) spinnerTo.setSelection(position)
         }
 
         // Handle swap button
@@ -106,6 +110,10 @@ class DataFragment : Fragment() {
         // Handle copy buttons
         btnCopyInput.setOnClickListener { copyToClipboard(tvInput.text.toString()) }
         btnCopyOutput.setOnClickListener { copyToClipboard(tvOutput.text.toString()) }
+
+        // Observe input/output
+        viewModel.input.observe(viewLifecycleOwner) { tvInput.text = it }
+        viewModel.output.observe(viewLifecycleOwner) { tvOutput.text = it }
 
         return view
     }
@@ -116,5 +124,4 @@ class DataFragment : Fragment() {
         clipboard.setPrimaryClip(clip)
         Toast.makeText(requireContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show()
     }
-
 }

@@ -23,25 +23,42 @@ android {
         }
     }
     buildTypes {
-        getByName("release") {
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            isDebuggable = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        debug {
             isMinifyEnabled = false
+            isShrinkResources = false
+            isDebuggable = true
         }
     }
+    flavorDimensions += listOf("pricing")
+
+    productFlavors {
+        create("free") {
+            applicationIdSuffix = ".free"
+            dimension = "pricing"
+            //      resValue("string","app_name","ProductFlavors-Free")
+        }
+        create("premium") {
+            applicationIdSuffix = ".premium"
+            dimension = "pricing"
+            //       resValue("string", "app_name", "ProductFlavors-Paid")
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = "1.8"
-    }
-    flavorDimensions.add("mode")
-    productFlavors {
-        create("free") {
-            dimension = "mode"
-        }
-        create("premium") {
-            dimension = "mode"
-        }
     }
 }
 

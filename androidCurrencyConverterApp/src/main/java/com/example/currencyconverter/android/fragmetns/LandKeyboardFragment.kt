@@ -1,4 +1,5 @@
 package com.example.currencyconverter.android.fragmetns
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +8,9 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.currencyconverter.android.ConverterViewModel
+import com.example.currencyconverter.R
 
-class KeyboardFragment : Fragment() {
+class LandKeyboardFragment : Fragment() {
 
     private lateinit var viewModel: ConverterViewModel
 
