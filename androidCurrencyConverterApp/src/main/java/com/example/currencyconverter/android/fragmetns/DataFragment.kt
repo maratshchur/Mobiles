@@ -105,7 +105,13 @@ class DataFragment : Fragment() {
         }
 
         // Handle swap button
-        tvSwap.setOnClickListener { viewModel.swapUnits() }
+        tvSwap.setOnClickListener {
+            viewModel.swapUnits()
+            val units = categories[viewModel.selectedCategory] ?: emptyList()
+            spinnerFrom.setSelection(units.indexOf(viewModel.fromUnit))
+            spinnerTo.setSelection(units.indexOf(viewModel.toUnit))
+
+        }
 
         // Handle copy buttons
         btnCopyInput.setOnClickListener { copyToClipboard(tvInput.text.toString()) }
